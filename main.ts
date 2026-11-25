@@ -7,4 +7,11 @@ const LINE =
 
 const outDir = process.env.MAKEFUN_OUTPUT_DIR ?? "/output";
 mkdirSync(outDir, { recursive: true });
+
+// Guard the entry before writing it: the judge wants exactly one line
+// under 200 characters, so refuse to write anything that drifted out of
+// shape instead of letting a broken entry reach the grader.
+if (!LINE || LINE.includes("\n") || LINE.length > 200) {
+  throw new Error("entry must be a single line of at most 200 characters");
+}
 writeFileSync(join(outDir, "entry.txt"), LINE, "utf8");
